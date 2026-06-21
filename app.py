@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 st.set_page_config(
-    page_title="AHP Credit Scoring DSS",
-    page_icon="📊",
+    page_title="SME Loan Assessment System",
+    page_icon="🏦",
     layout="wide"
 )
 
@@ -30,86 +30,149 @@ global_weights = {
     "Business Experience": 0.0209
 }
 
-pages = ["Home", "AHP Weights", "Applicant Evaluation", "Result Dashboard"]
+assessment_groups = {
+    "Financial Stability": [
+        "Financial Records",
+        "Income Stability",
+        "Savings and Current Account"
+    ],
+    "Creditworthiness": [
+        "Credit History",
+        "Repayment Period",
+        "Existing Loan"
+    ],
+    "Repayment Capacity": [
+        "Monthly Income",
+        "Cash Liquidity",
+        "Debt Ratio"
+    ],
+    "Business Reliability": [
+        "Integrity",
+        "Business Background",
+        "Business Experience"
+    ]
+}
+
+pages = [
+    "Home",
+    "Evaluation Factors",
+    "Loan Application Assessment",
+    "Assessment Result"
+]
 
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-st.sidebar.title("Navigation")
+st.sidebar.markdown("## 🏦 SME Loan DSS")
+st.sidebar.caption("Decision Support System")
 
 page = st.sidebar.radio(
-    "Go to",
+    "Navigation",
     pages,
     index=pages.index(st.session_state.page)
 )
 
 st.session_state.page = page
 
-if page == "Home":
-    st.title("AHP-Based Credit Scoring Decision Support System")
-    st.subheader("For SME Loan Evaluation")
 
-    st.write("""
-    This system supports SME loan evaluation by applying criteria and subcriteria
-    weights derived from the Analytic Hierarchy Process (AHP).
-    """)
+if page == "Home":
+    st.title("🏦 SME Loan Assessment System")
+    st.markdown("### Helping loan officers evaluate business loan applications")
 
     st.info("""
-    System Flow:
-    Literature Review → Expert Evaluation → AHP Weight Calculation → Applicant Scoring → Loan Recommendation
+    This system supports SME loan evaluation by combining expert-defined importance levels
+    with business performance ratings to generate an assessment score and recommended decision.
     """)
 
-    st.header("System Objectives")
+    st.markdown("---")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Main Categories", "4")
+    col2.metric("Assessment Factors", "12")
+    col3.metric("Expert Input", "AHP")
+    col4.metric("Output", "Loan Decision")
+
+    st.header("How the System Works")
+
     st.write("""
-    1. To apply AHP-derived weights in SME loan evaluation.  
-    2. To calculate weighted credit scores based on applicant assessment.  
-    3. To support loan officers in making structured and transparent decisions.
+    1. Important loan evaluation factors are identified from literature and expert input.  
+    2. Each factor is assigned an importance level using the Analytic Hierarchy Process (AHP).  
+    3. The loan officer rates the applicant's business performance from 1 to 5.  
+    4. The system calculates the overall assessment score and suggests a loan decision.
     """)
 
-elif page == "AHP Weights":
-    st.title("AHP Criteria and Global Weights")
+    st.header("System Purpose")
 
-    st.header("Main Criteria Weights")
+    st.write("""
+    This system is designed to support a more structured, consistent, and transparent
+    loan assessment process for SME loan applications.
+    """)
+
+
+elif page == "Evaluation Factors":
+    st.title("Loan Evaluation Factors")
+
+    st.write("""
+    This section shows the main categories and detailed factors used in the loan assessment.
+    The importance levels are based on expert evaluation using the AHP method.
+    """)
+
+    st.header("Main Evaluation Categories")
 
     criteria_df = pd.DataFrame({
-        "Criteria": list(criteria_weights.keys()),
-        "Weight": list(criteria_weights.values())
+        "Evaluation Category": list(criteria_weights.keys()),
+        "Importance Level": list(criteria_weights.values())
     })
 
-    st.dataframe(criteria_df, use_container_width=True)
+    criteria_df["Importance Level"] = criteria_df["Importance Level"].round(4)
 
-    st.header("Subcriteria Global Weights")
+    st.dataframe(
+        criteria_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.header("Detailed Assessment Factors")
 
     weight_df = pd.DataFrame({
-        "Subcriteria": list(global_weights.keys()),
-        "Global Weight": list(global_weights.values())
+        "Assessment Factor": list(global_weights.keys()),
+        "Importance Level": list(global_weights.values())
     })
 
-    weight_df = weight_df.sort_values(by="Global Weight", ascending=False)
+    weight_df = weight_df.sort_values(by="Importance Level", ascending=False)
     weight_df.insert(0, "Rank", range(1, len(weight_df) + 1))
 
-    st.dataframe(weight_df, use_container_width=True)
+    st.dataframe(
+        weight_df,
+        use_container_width=True,
+        hide_index=True,
+        height=400
+    )
 
-    st.info("""
-    Based on the AHP global weights, Financial Records is the most influential subcriterion,
-    while Business Experience has the lowest influence in the proposed credit scoring model.
+    st.success("""
+    Financial Records has the highest importance level in this model.
+    This means that proper financial documentation plays an important role
+    in SME loan assessment.
     """)
 
-    st.subheader("AHP Global Weight Ranking")
+    st.subheader("Importance Ranking of Assessment Factors")
 
-    chart_df = weight_df.sort_values(by="Global Weight", ascending=True)
+    chart_df = weight_df.sort_values(by="Importance Level", ascending=True)
 
-    fig, ax = plt.subplots(figsize=(7, 3.5))
-    ax.barh(chart_df["Subcriteria"], chart_df["Global Weight"])
-    ax.set_xlabel("Global Weight")
-    ax.set_ylabel("Subcriteria")
-    ax.set_title("AHP Global Weight Ranking")
-    st.pyplot(fig)
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.barh(chart_df["Assessment Factor"], chart_df["Importance Level"])
+    ax.set_xlabel("Importance Level")
+    ax.set_title("Importance Ranking of Assessment Factors")
+    plt.tight_layout()
 
-elif page == "Applicant Evaluation":
-    st.title("Applicant Evaluation")
+    st.pyplot(fig, use_container_width=False)
 
-    st.header("Applicant Information")
+
+elif page == "Loan Application Assessment":
+    st.title("Loan Application Assessment")
+
+    st.header("Business Information")
 
     business_name = st.text_input("Business Name")
 
@@ -156,34 +219,37 @@ elif page == "Applicant Evaluation":
         step=1000.0
     )
 
-    st.header("Subcriteria Assessment")
-    st.caption("Rate each subcriterion from 1 to 5.")
-    st.caption("1 = Very Poor, 2 = Poor, 3 = Fair, 4 = Good, 5 = Excellent")
+    st.header("Business Performance Rating")
+
+    st.caption("Rate each factor based on the applicant's business condition.")
+    st.caption("1 = Very Weak, 2 = Weak, 3 = Average, 4 = Good, 5 = Excellent")
 
     scores = {}
 
-    for subcriterion in global_weights.keys():
-        scores[subcriterion] = st.slider(
-            subcriterion,
-            min_value=1,
-            max_value=5,
-            value=3
-        )
+    for group, factors in assessment_groups.items():
+        with st.expander(group, expanded=True):
+            for factor in factors:
+                scores[factor] = st.slider(
+                    factor,
+                    min_value=1,
+                    max_value=5,
+                    value=3
+                )
 
-    if st.button("Calculate Credit Score"):
+    if st.button("Calculate Assessment Score"):
         result_data = []
         total_score = 0
 
-        for subcriterion, weight in global_weights.items():
-            score = scores[subcriterion]
+        for factor, weight in global_weights.items():
+            score = scores[factor]
             weighted_score = score * weight
             total_score += weighted_score
 
             result_data.append({
-                "Subcriteria": subcriterion,
-                "Applicant Score": score,
-                "AHP Global Weight": weight,
-                "Weighted Score": round(weighted_score, 4)
+                "Assessment Factor": factor,
+                "Applicant Rating": score,
+                "Importance Level": weight,
+                "Score Contribution": round(weighted_score, 4)
             })
 
         final_percentage = (total_score / 5) * 100
@@ -197,10 +263,10 @@ elif page == "Applicant Evaluation":
             decision = "Approved"
             risk_level = "Low Risk"
         elif final_percentage >= 60:
-            decision = "Conditional Approval"
+            decision = "Approved with Conditions"
             risk_level = "Moderate Risk"
         elif final_percentage >= 40:
-            decision = "Further Review Required"
+            decision = "Manual Review Required"
             risk_level = "High Risk"
         else:
             decision = "Rejected"
@@ -219,55 +285,57 @@ elif page == "Applicant Evaluation":
         st.session_state["years_in_business"] = years_in_business
         st.session_state["calculated"] = True
 
-        st.success("Credit score calculated successfully.")
+        st.success("Assessment completed successfully.")
 
     if st.session_state.get("calculated", False):
-        if st.button("View Result"):
-            st.session_state.page = "Result Dashboard"
+        if st.button("View Assessment Result"):
+            st.session_state.page = "Assessment Result"
             st.session_state["calculated"] = False
             st.rerun()
 
-elif page == "Result Dashboard":
-    st.title("Result Dashboard")
+
+elif page == "Assessment Result":
+    st.title("Assessment Result")
 
     if "result_df" not in st.session_state:
-        st.warning("No evaluation result found. Please complete the Applicant Evaluation first.")
+        st.warning("No assessment result found. Please complete the loan application assessment first.")
     else:
         result_df = st.session_state["result_df"]
         decision = st.session_state["decision"]
 
         st.info("""
-        This result is calculated using AHP-derived global weights obtained from expert evaluation.
-        The applicant score is multiplied by each subcriterion weight to produce the final credit score.
+        This assessment is based on expert-defined importance levels and the applicant's
+        performance across different business factors.
         """)
 
-        st.header("Executive Summary")
+        st.header("Assessment Summary")
 
         col1, col2, col3 = st.columns(3)
 
-        col1.metric("Final Credit Score", f"{st.session_state['final_percentage']:.2f}%")
-        col2.metric("Risk Level", st.session_state["risk_level"])
+        col1.metric(
+            "Overall Assessment Score",
+            f"{st.session_state['final_percentage']:.2f}%"
+        )
 
-        with col3:
-            st.metric("Loan Recommendation", decision)
+        col2.metric(
+            "Business Risk Level",
+            st.session_state["risk_level"]
+        )
 
-            if decision == "Approved":
-                st.success("Recommended for approval")
+        col3.metric(
+            "Recommended Decision",
+            decision
+        )
 
-            elif decision == "Conditional Approval":
-                st.warning("Approval with additional review")
-
-            elif decision == "Further Review Required":
-                st.warning("Further assessment required")
-
-            else:
-                st.error("Not recommended for approval")
-
-        st.header("Applicant Summary")
+        st.header("Business Profile")
 
         col1, col2 = st.columns(2)
 
-        col1.write(f"**Business Name:** {st.session_state['business_name']}")
+        business_name_display = st.session_state["business_name"]
+        if business_name_display == "":
+            business_name_display = "Not provided"
+
+        col1.write(f"**Business Name:** {business_name_display}")
         col1.write(f"**Business Type:** {st.session_state['business_type']}")
         col1.write(f"**Years in Business:** {st.session_state['years_in_business']}")
 
@@ -275,7 +343,7 @@ elif page == "Result Dashboard":
         col2.write(f"**Monthly Revenue:** RM {st.session_state['monthly_revenue']:,.2f}")
         col2.write(f"**Loan Purpose:** {st.session_state['loan_purpose']}")
 
-        st.header("Loan Evaluation Metrics")
+        st.header("Financial Indicators")
 
         ratio = st.session_state["loan_income_ratio"]
 
@@ -287,106 +355,134 @@ elif page == "Result Dashboard":
             ratio_status = "High"
 
         col1, col2 = st.columns(2)
-        col1.metric("Loan-to-Income Ratio", f"{ratio:.2f}")
-        col2.metric("Financing Risk", ratio_status)
 
-        st.subheader("Recommendation Report")
+        col1.metric(
+            "Loan Affordability Ratio",
+            f"{ratio:.2f}"
+        )
+
+        col2.metric(
+            "Financing Risk Assessment",
+            ratio_status
+        )
+
+        st.subheader("Decision Explanation")
 
         if decision == "Approved":
             st.success("""
-            The applicant demonstrates satisfactory performance across the major evaluation criteria.
-            Loan approval is recommended based on the AHP-weighted credit score.
+            The business shows strong overall performance based on the selected assessment factors.
+            Loan approval is recommended.
             """)
-        elif decision == "Conditional Approval":
+        elif decision == "Approved with Conditions":
             st.warning("""
-            The applicant demonstrates moderate creditworthiness.
-            Additional review or supporting documents are recommended before final approval.
+            The business shows acceptable performance, but some areas may require additional review.
+            Loan approval may be considered with supporting documents or specific conditions.
             """)
-        elif decision == "Further Review Required":
+        elif decision == "Manual Review Required":
             st.warning("""
-            The applicant presents several risk factors.
-            Further investigation is recommended before making the final loan decision.
+            The business shows several risk areas. A manual review is recommended before making
+            the final loan decision.
             """)
         else:
             st.error("""
-            The applicant demonstrates a high level of credit risk.
-            Loan approval is not recommended based on the current evaluation.
+            The business shows a high risk level based on the current assessment.
+            Loan approval is not recommended.
             """)
 
-        st.subheader("Applicant Risk Profile")
+        st.subheader("Business Risk Profile")
 
         strength_df = result_df.sort_values(
-            by="Weighted Score",
+            by="Score Contribution",
             ascending=False
         ).head(3)
 
         weak_df = result_df.sort_values(
-            by=["Applicant Score", "AHP Global Weight"],
+            by=["Applicant Rating", "Importance Level"],
             ascending=[True, False]
         ).head(3)
 
         col1, col2 = st.columns(2)
 
+
         with col1:
-            st.success("Strength Areas")
-            for item in strength_df["Subcriteria"]:
+            st.success("Key Strengths")
+
+            for item in strength_df["Assessment Factor"]:
                 st.write(f"✓ {item}")
 
         with col2:
-            st.error("Improvement Areas")
-            for item in weak_df["Subcriteria"]:
-                st.write(f"✗ {item}")
+            st.error("Areas for Improvement")
 
-        st.subheader("Top Strength Factors")
+            for item in weak_df["Assessment Factor"]:
+                st.write(f"• {item}")
 
-        st.dataframe(
-            strength_df[["Subcriteria", "Applicant Score", "AHP Global Weight", "Weighted Score"]],
-            use_container_width=True
-        )
-
-        st.subheader("Key Weak Areas")
+        st.subheader("Key Strengths")
 
         st.dataframe(
-            weak_df[["Subcriteria", "Applicant Score", "AHP Global Weight", "Weighted Score"]],
-            use_container_width=True
+            strength_df[[
+                "Assessment Factor",
+                "Applicant Rating",
+                "Importance Level",
+                "Score Contribution"
+            ]],
+            use_container_width=True,
+            hide_index=True
         )
 
-        st.subheader("AHP Criteria Contribution Chart")
+        st.subheader("Key Areas for Improvement")
 
-        chart_df = result_df.sort_values(by="Weighted Score", ascending=True)
+        st.dataframe(
+            weak_df[[
+                "Assessment Factor",
+                "Applicant Rating",
+                "Importance Level",
+                "Score Contribution"
+            ]],
+            use_container_width=True,
+            hide_index=True
+        )
+
+        st.subheader("Factors Contributing to the Final Score")
+
+        chart_df = result_df.sort_values(by="Score Contribution", ascending=True)
 
         fig, ax = plt.subplots(figsize=(7, 3.5))
 
         ax.barh(
-            chart_df["Subcriteria"],
-            chart_df["Weighted Score"]
+            chart_df["Assessment Factor"],
+            chart_df["Score Contribution"]
         )
 
-        ax.set_xlabel("Weighted Score")
-        ax.set_title("Weighted Score Contribution by Subcriteria")
+        ax.set_xlabel("Score Contribution")
+        ax.set_title("Contribution of Each Assessment Factor")
 
         plt.tight_layout()
 
         st.pyplot(fig, use_container_width=False)
 
-        st.subheader("Detailed AHP Weighted Score Calculation")
+        st.subheader("Detailed Score Breakdown")
 
-        st.dataframe(result_df, use_container_width=True,height=300)
+        st.dataframe(
+            result_df,
+            use_container_width=True,
+            hide_index=True,
+            height=300
+        )
 
         st.subheader("Export Result")
 
         csv = result_df.to_csv(index=False).encode("utf-8")
 
         st.download_button(
-            label="Download Evaluation Result as CSV",
+            label="Download Assessment Result as CSV",
             data=csv,
-            file_name="ahp_credit_scoring_result.csv",
+            file_name="sme_loan_assessment_result.csv",
             mime="text/csv"
         )
 
-        st.subheader("New Evaluation")
+        st.subheader("New Assessment")
 
-        if st.button("Evaluate New Applicant"):
+        if st.button("Assess New Applicant"):
             keys_to_clear = [
                 "result_df",
                 "final_percentage",
@@ -406,5 +502,8 @@ elif page == "Result Dashboard":
                 if key in st.session_state:
                     del st.session_state[key]
 
-            st.session_state.page = "Applicant Evaluation"
+            st.session_state.page = "Loan Application Assessment"
             st.rerun()
+
+        st.markdown("---")
+        st.caption("SME Loan Assessment Decision Support System | Final Year Project")
