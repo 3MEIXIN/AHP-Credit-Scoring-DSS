@@ -408,7 +408,7 @@ elif page == "Assessment Result":
             st.success("Key Strengths")
 
             for item in strength_df["Assessment Factor"]:
-                st.write(f"✓ {item}")
+                 st.write(f"✓ {item}")
 
         with col2:
             st.error("Areas for Improvement")
