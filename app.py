@@ -436,7 +436,7 @@ def generate_remarks(decision: str, risk_level: str, pct: float, r_status: str, 
 # ─────────────────────────────────────────────────────────────────────────────
 
 def generate_pdf_report(result_df: pd.DataFrame, criteria_df: pd.DataFrame) -> bytes:
-    """Generate a compact professional PDF report for loan officer documentation."""
+    """Generate a compact professional PDF report for credit officer documentation."""
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -510,7 +510,7 @@ def generate_pdf_report(result_df: pd.DataFrame, criteria_df: pd.DataFrame) -> b
     header_data = [[
         Paragraph(SYSTEM_NAME, h_title),
         Paragraph(
-            f"Loan Assessment Report<br/>Generated: {generated}",
+            f"Credit Assessment Report<br/>Generated: {generated}",
             h_sub,
         ),
     ]]
@@ -719,7 +719,7 @@ def render_sidebar() -> str:
 
         page = st.radio("Navigation", PAGES, index=PAGES.index(st.session_state.page))
         st.markdown("---")
-        st.caption("Structured credit evaluation framework for SME loan officers.")
+        st.caption("Structured credit evaluation framework for SME credit officers.")
 
     st.session_state.page = page
     return page
@@ -734,7 +734,7 @@ def render_home():
     <div class="hero">
         <h1>{SYSTEM_NAME}</h1>
         <p>
-            This system assists loan officers in evaluating SME financing applications through a structured,
+            This system assists credit officers in evaluating SME financing applications through a structured,
             weighted credit scoring model. It promotes consistency, transparency, and professionalism
             in every lending assessment.
         </p>
@@ -965,7 +965,7 @@ def render_result_dashboard():
     st.markdown("## Assessment Result Dashboard")
 
     if "result_df" not in st.session_state:
-        st.warning("No assessment result found. Please complete the Loan Application Assessment first.")
+        st.warning("No assessment result found. Please complete the Credit Application Assessment first.")
         return
 
     result_df   = st.session_state["result_df"]
@@ -984,7 +984,7 @@ def render_result_dashboard():
     <div class="card">
         <p style="margin:0;line-height:1.8;color:#445166;">
             Results are generated using validated assessment weights and applicant performance ratings
-            entered in the assessment form. This dashboard is intended for loan officer review and documentation.
+            entered in the assessment form. This dashboard is intended for credit officer review and documentation.
         </p>
     </div>""", unsafe_allow_html=True)
 
@@ -1107,7 +1107,7 @@ def render_result_dashboard():
     with b2:
         if st.button("Assess New Applicant", use_container_width=True):
             reset_assessment_state()
-            st.session_state.page = "Loan Application Assessment"
+            st.session_state.page = "Credit Application Assessment"
             st.rerun()
 
 
