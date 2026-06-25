@@ -1034,7 +1034,6 @@ def render_result_dashboard():
                 <h4>{row['Main Criterion']}</h4>
                 <div class="score">{row['Avg Rating (/ 5)']:.2f} / 5</div>
                 <div class="meta">
-                    Performance: {row['Criterion Score (%)']:.1f}%<br>
                     Weight: {row['Criterion Weight']:.4f}<br>
                     Weighted Score: {row['Weighted Score']:.4f}
                 </div>
