@@ -701,6 +701,8 @@ def generate_pdf_report(result_df: pd.DataFrame, criteria_df: pd.DataFrame) -> b
 
 
     doc.build(story)
+    buffer.seek(0)
+    return buffer.read()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
