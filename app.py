@@ -17,7 +17,7 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 # 1. CONSTANTS  (AHP weights unchanged)
 # ─────────────────────────────────────────────────────────────────────────────
 
-SYSTEM_NAME = "SME Loan Assessment System"
+SYSTEM_NAME = "SME CreditWise"
 
 CRITERIA_WEIGHTS = {
     "Financial Stability":  0.4030,
@@ -48,7 +48,7 @@ ASSESSMENT_GROUPS = {
     "Borrower Reliability": ["Integrity", "Business Background", "Business Experience"],
 }
 
-PAGES = ["Home", "Evaluation Factors", "Loan Application Assessment", "Assessment Result"]
+PAGES = ["Home", "Assessment Overview", "Credit Application Assessment", "Assessment Result"]
 
 BUSINESS_TYPES = [
     "Retail", "Manufacturing", "Services", "Construction",
@@ -96,7 +96,6 @@ RISK_THEMES = {
 
 st.set_page_config(
     page_title=SYSTEM_NAME,
-    page_icon="🏦",
     layout="wide",
 )
 
@@ -713,8 +712,8 @@ def render_sidebar() -> str:
     with st.sidebar:
         st.markdown(f"""
         <div class="sidebar-brand">
-            <h2>🏦 {SYSTEM_NAME}</h2>
-            <p>Credit Scoring Decision Support<br>for SME Loan Evaluation</p>
+            <h2>📈 {SYSTEM_NAME}</h2>
+            <p>Smart Credit Assessment for SME Financing</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -863,14 +862,14 @@ def render_evaluation_factors():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 10. LOAN APPLICATION ASSESSMENT PAGE
+# 10. CREDIT APPLICATION ASSESSMENT PAGE
 # ─────────────────────────────────────────────────────────────────────────────
 
 def render_assessment_form():
     # Constrain width on wide screens
     _, center, _ = st.columns([1, 5, 1])
     with center:
-        st.markdown("## Loan Application Assessment")
+        st.markdown("## Credit Application Assessment")
         st.markdown("""
         <div class="card">
             <p style="margin:0;line-height:1.8;color:#445166;">
@@ -1122,8 +1121,8 @@ def main():
     page = render_sidebar()
 
     if   page == "Home":                        render_home()
-    elif page == "Evaluation Factors":          render_evaluation_factors()
-    elif page == "Loan Application Assessment": render_assessment_form()
+    elif page == "Assessment Overview":          render_evaluation_factors()
+    elif page == "Credit Application Assessment": render_assessment_form()
     elif page == "Assessment Result":           render_result_dashboard()
 
 
