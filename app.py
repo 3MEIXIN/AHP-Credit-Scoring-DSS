@@ -699,21 +699,8 @@ def generate_pdf_report(result_df: pd.DataFrame, criteria_df: pd.DataFrame) -> b
     factor_tbl.setStyle(TableStyle(style_cmds))
     story.append(factor_tbl)
 
-    # Footer
-    def draw_footer(canvas, doc_obj):
-        canvas.saveState()
-        footer_text = (
-            f"{SYSTEM_NAME} · Confidential — For Internal Use Only · Page {doc_obj.page} · "
-            "This report supports loan officer judgment and does not replace final credit approval."
-        )
-        p = Paragraph(footer_text, footer_s)
-        p.wrap(W, 9 * mm)
-        p.drawOn(canvas, doc_obj.leftMargin, 6 * mm)
-        canvas.restoreState()
 
-    doc.build(story, onFirstPage=draw_footer, onLaterPages=draw_footer)
-    buffer.seek(0)
-    return buffer.read()
+    doc.build(story)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
