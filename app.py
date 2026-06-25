@@ -799,7 +799,7 @@ def render_home():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def render_evaluation_factors():
-    st.markdown("## Evaluation Factors and Assessment Weights")
+    st.markdown("## Assessment Overview")
     st.markdown("""
     <div class="card">
         <p style="margin:0;line-height:1.8;color:#445166;">
